@@ -22,7 +22,7 @@ module "apigw_lambda_proxy" {
   rest_api_id            = module.apigw.rest_api_id
   rest_api_execution_arn = module.apigw.execution_arn
   parent_resource_id     = module.apigw.root_resource_id
-  method                 = "POST"
+  method                 = "ANY"
   path                   = "{proxy+}"
   header_mappings        = []
   lambda_name            = var.lambda_name
@@ -38,14 +38,34 @@ module "apigw_deployment" {
   ]
 }
 
+locals {
+  root_domain_name = "reij.uno"
+  api_domain_name  = "les.reij.uno"
+}
+
 data "aws_acm_certificate" "this" {
-  domain = "reij.uno"
+  domain = local.root_domain_name
 }
 
 module "apigw_domain" {
   source          = "../../modules/apigw-domain"
   rest_api_id     = module.apigw.rest_api_id
   stage_name      = module.apigw_deployment.stage_name
-  domain_name     = "les.reij.uno"
+  domain_name     = local.api_domain_name
   certificate_arn = data.aws_acm_certificate.this.arn
+}
+
+data "aws_route53_zone" "this" {
+  name = local.root_domain_name
+}
+
+resource "aws_route53_record" "apigw" {
+  zone_id = data.aws_route53_zone.this.zone_id
+  name    = local.api_domain_name
+  type    = "A"
+  alias {
+    zone_id                = module.apigw_domain.regional_zone_id
+    name                   = module.apigw_domain.regional_domain_name
+    evaluate_target_health = true
+  }
 }
