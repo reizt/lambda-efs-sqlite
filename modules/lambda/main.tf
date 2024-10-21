@@ -14,7 +14,6 @@ resource "aws_lambda_function" "this" {
   s3_bucket         = var.s3_bucket
   s3_key            = var.s3_key
   s3_object_version = var.s3_object_version
-  source_code_hash  = var.source_code_hash
   layers            = var.layers
   environment {
     variables = var.environment

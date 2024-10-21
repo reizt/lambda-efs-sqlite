@@ -22,9 +22,6 @@ variable "s3_key" {
 variable "s3_object_version" {
   type = string
 }
-variable "source_code_hash" {
-  type = string
-}
 variable "layers" {
   type = list(string)
 }
