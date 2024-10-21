@@ -20,3 +20,8 @@ module "apigw" {
   lambda_name       = module.lambda.name
   lambda_invoke_arn = module.lambda.invoke_arn
 }
+
+module "gha" {
+  source = "./services/gha"
+  app    = local.app
+}
