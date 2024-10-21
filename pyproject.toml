@@ -1,0 +1,39 @@
+[project]
+name = "lambda-efs-sqlite"
+version = "0.1.0"
+description = "Add your description here"
+authors = [
+    { name = "Reiju Takahashi", email = "reizt.dev@gmail.com" }
+]
+dependencies = []
+readme = "README.md"
+requires-python = ">= 3.12"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.rye]
+managed = true
+dev-dependencies = [
+    "ruff>=0.7.0",
+    "mypy>=1.12.1",
+]
+
+[tool.ruff]
+indent-width = 2
+[tool.ruff.format]
+indent-style = "space"
+
+[tool.mypy]
+files = "src/**/*.py"
+strict = true
+ignore_missing_imports = true
+disallow_untyped_decorators = false
+disallow_untyped_calls = false
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.hatch.build.targets.wheel]
+packages = ["src"]
