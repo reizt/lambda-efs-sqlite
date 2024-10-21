@@ -32,6 +32,10 @@ resource "aws_efs_file_system" "this" {
   creation_token = local.app
 }
 
+resource "aws_efs_access_point" "this" {
+  file_system_id = aws_efs_file_system.this.id
+}
+
 resource "aws_security_group" "lambda" {
   name   = "${local.app}-lambda"
   vpc_id = var.vpc_id
@@ -61,7 +65,7 @@ module "lambda" {
   policy                 = data.aws_iam_policy_document.lambda.json
   subnet_ids             = var.subnet_ids
   security_group_ids     = [aws_security_group.lambda.id]
-  file_system_arn        = aws_efs_file_system.this.arn
+  file_system_arn        = aws_efs_access_point.this.arn
   file_system_mount_path = "/mnt/efs"
 }
 
