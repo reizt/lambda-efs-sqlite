@@ -1,0 +1,26 @@
+name: Upload layer
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - requirements.lock
+  workflow_dispatch:
+permissions:
+  id-token: write
+  contents: read
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: 3.12
+          cache: pip
+      - run: ./create-layer.sh
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+      - run: aws s3 cp layer.zip s3://reizt-lambda-efs-sqlite/layer.zip
