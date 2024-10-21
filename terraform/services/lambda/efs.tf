@@ -14,10 +14,8 @@ resource "aws_efs_file_system_policy" "this" {
 data "aws_iam_policy_document" "efs" {
   statement {
     principals {
-      type = "AWS"
-      identifiers = [
-        for lambda in module.lambda : lambda.role_arn
-      ]
+      type        = "AWS"
+      identifiers = ["*"]
     }
     actions = [
       "elasticfilesystem:ClientMount",

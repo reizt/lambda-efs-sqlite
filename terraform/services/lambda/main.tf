@@ -59,7 +59,10 @@ module "lambda" {
   file_system_mount_path = local.efs_mount_path
   log_group_name         = "/${local.app}/${each.value}/lambda"
 
-  depends_on = [aws_efs_mount_target.this]
+  depends_on = [
+    aws_efs_mount_target.this,
+    aws_efs_file_system_policy.this,
+  ]
 }
 
 data "aws_iam_policy_document" "lambda" {
