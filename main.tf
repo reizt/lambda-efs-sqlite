@@ -8,7 +8,7 @@ terraform {
   required_version = ">= 1.9.8"
 
   cloud {
-    organization = "crtm"
+    organization = "reizt"
     workspaces {
       name = "lambda-efs-sqlite"
     }
