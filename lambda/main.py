@@ -5,8 +5,8 @@ db_path = "/mnt/efs/sqlite3.db"
 
 def handler(event, context):
   print(event)
+  conn = sqlite3.connect(db_path)
   try:
-    conn = sqlite3.connect(db_path)
     print("connected")
 
     cur = conn.cursor()
