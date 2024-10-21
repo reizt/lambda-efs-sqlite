@@ -24,7 +24,7 @@ resource "aws_s3_bucket" "this" {
 }
 
 data "archive_file" "artifact" {
-  source_dir  = "./lambda"
+  source_dir  = "./src"
   type        = "zip"
   output_path = "./lambda.zip"
 }
