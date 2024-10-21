@@ -78,12 +78,14 @@ resource "aws_security_group" "lambda" {
 }
 
 module "lambda" {
-  source                 = "../../modules/lambda"
-  name                   = local.app
-  runtime                = "python3.12"
-  handler                = "main.handler"
-  layers                 = []
-  environment            = {}
+  source  = "../../modules/lambda"
+  name    = local.app
+  runtime = "python3.12"
+  handler = "main.handler"
+  layers  = []
+  environment = {
+    DATABASE_PATH = "/mnt/efs/sqlite3.db"
+  }
   s3_bucket              = aws_s3_object.artifact.bucket
   s3_key                 = aws_s3_object.artifact.key
   source_code_hash       = data.archive_file.artifact.output_base64sha256

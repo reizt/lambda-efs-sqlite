@@ -1,10 +1,10 @@
+import os
 import sqlite3
-
-db_path = "/mnt/efs/sqlite3.db"
 
 
 def handler(event, context):
   print(event)
+  db_path = os.environ["DATABASE_PATH"]
   conn = sqlite3.connect(db_path)
   try:
     print("connected")
@@ -29,3 +29,7 @@ def handler(event, context):
     print(rows)
   finally:
     conn.close()
+
+
+if __name__ == "__main__":
+  handler({}, {})
