@@ -1,6 +1,5 @@
 import os
 import sqlite3
-from typing import Any
 
 from fastapi import FastAPI
 
@@ -13,8 +12,7 @@ def read_root() -> dict[str, str]:
 
 
 @app.post("/db")
-def db(event: dict[str, Any], ctx: dict[str, Any]) -> None:
-  print(event)
+def db() -> None:
   efs_dir = os.environ["EFS_MOUNT_PATH"]
   print("efs_dir", efs_dir)
   print("exists: ", os.path.isdir(efs_dir))
