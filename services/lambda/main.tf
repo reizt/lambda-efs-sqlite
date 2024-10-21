@@ -43,6 +43,14 @@ resource "aws_efs_access_point" "this" {
     gid = 1000
     uid = 1000
   }
+  root_directory {
+    path = "/"
+    creation_info {
+      owner_gid   = 1000
+      owner_uid   = 1000
+      permissions = "0777"
+    }
+  }
   tags = {
     Name = local.app
   }
