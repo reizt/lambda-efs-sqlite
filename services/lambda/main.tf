@@ -12,6 +12,13 @@ variable "subnet_id" {
   type = string
 }
 
+output "name" {
+  value = module.lambda.name
+}
+output "invoke_arn" {
+  value = module.lambda.invoke_arn
+}
+
 resource "aws_s3_bucket" "this" {
   bucket = "reizt-lambda-efs-sqlite"
 }

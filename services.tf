@@ -13,3 +13,10 @@ module "lambda" {
   vpc_id    = module.network.vpc_id
   subnet_id = module.network.public_subnet_id
 }
+
+module "apigw" {
+  source            = "./services/apigw"
+  app               = local.app
+  lambda_name       = module.lambda.name
+  lambda_invoke_arn = module.lambda.invoke_arn
+}
