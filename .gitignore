@@ -3,5 +3,6 @@
 .mypy_cache/
 __pycache__/
 tmp/
-layer/
+.sqlite/
 *.zip
+*.env

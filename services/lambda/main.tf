@@ -154,7 +154,7 @@ module "lambda" {
   handler = "lambda.handler"
   layers  = [aws_lambda_layer_version.this.arn]
   environment = {
-    EFS_MOUNT_PATH = local.efs_mount_path
+    DATABASE_URL = "${local.efs_mount_path}/sqlite3.db"
   }
   s3_bucket              = aws_s3_object.artifact.bucket
   s3_key                 = aws_s3_object.artifact.key

@@ -1,45 +1,55 @@
-import os
-import sqlite3
-
 from fastapi import FastAPI
+from pydantic import BaseModel
+
+from src.ent import Post, User
+from src.repo import Repo
 
 app = FastAPI()
 
 
 @app.get("/hello")
-def read_root() -> dict[str, str]:
+def root() -> dict[str, str]:
   return {"Hello": "World"}
 
 
-@app.post("/db")
-def db() -> None:
-  efs_dir = os.environ["EFS_MOUNT_PATH"]
-  print("efs_dir", efs_dir)
-  print("exists: ", os.path.isdir(efs_dir))
-  print("read permission: ", os.access(efs_dir, os.R_OK))
-  print("write permission: ", os.access(efs_dir, os.W_OK))
-  print("listdir: ", os.listdir(efs_dir))
-  conn = sqlite3.connect(f"{efs_dir}/sqlite3.db")
-  try:
-    print("connected")
+repo = Repo()
 
-    cur = conn.cursor()
-    print("cursor")
 
-    cur.execute(
-      """CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, name TEXT)"""
-    )
-    print("table created")
+class CreateUser(BaseModel):
+  name: str
 
-    cur.execute("INSERT INTO users (name) VALUES ('John Doe')")
-    print("inserted")
 
-    conn.commit()
-    print("committed")
+@app.post("/users")
+def create_user(body: CreateUser) -> User:
+  return repo.create_user(body.name)
 
-    cur.execute("SELECT * FROM users")
-    rows = cur.fetchall()
-    print("fetched")
-    print(rows)
-  finally:
-    conn.close()
+
+@app.get("/users")
+def get_users() -> list[User]:
+  return repo.get_users()
+
+
+@app.get("/users/{id}")
+def get_user(id: int) -> User:
+  return repo.get_user_by_id(id)
+
+
+class CreatePost(BaseModel):
+  title: str
+  content: str
+  user_id: int
+
+
+@app.post("/posts")
+def create_post(body: CreatePost) -> Post:
+  return repo.create_post(body.title, body.content, body.user_id)
+
+
+@app.get("/posts")
+def get_posts() -> list[Post]:
+  return repo.get_posts()
+
+
+@app.get("/posts/{id}")
+def get_post(id: int) -> Post:
+  return repo.get_post_by_id(id)
