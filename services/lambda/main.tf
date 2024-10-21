@@ -36,6 +36,46 @@ resource "aws_s3_object" "artifact" {
   etag   = data.archive_file.artifact.output_base64sha256
 }
 
+locals {
+  requirements_file = "requirements.lock"
+  requirements_hash = filemd5(local.requirements_file)
+  layer_file        = "layer.zip"
+}
+
+resource "null_resource" "create_layer" {
+  triggers = {
+    hash = local.requirements_hash
+  }
+  provisioner "local-exec" {
+    command = <<EOT
+      python -m venv layer
+      layer/bin/pip install -r ${local.requirements_file}
+      mkdir -p python/python
+      cp -r layer/lib python/python
+      zip -r ${local.layer_file} python
+    EOT
+  }
+}
+
+resource "aws_s3_object" "layer" {
+  bucket = aws_s3_bucket.this.bucket
+  key    = "layer.zip"
+  source = local.layer_file
+  etag   = local.requirements_hash
+  depends_on = [
+    null_resource.create_layer,
+  ]
+}
+
+resource "aws_lambda_layer_version" "this" {
+  layer_name               = local.app
+  compatible_runtimes      = ["python3.12"]
+  compatible_architectures = ["x86_64"]
+  s3_bucket                = aws_s3_bucket.this.bucket
+  s3_key                   = aws_s3_object.layer.key
+  source_code_hash         = aws_s3_object.layer.etag
+}
+
 resource "aws_efs_file_system" "this" {
   creation_token = local.app
   encrypted      = true
@@ -136,14 +176,14 @@ module "lambda" {
   source  = "../../modules/lambda"
   name    = local.app
   runtime = "python3.12"
-  handler = "main.handler"
+  handler = "lambda.handler"
   layers  = []
   environment = {
     EFS_MOUNT_PATH = local.efs_mount_path
   }
   s3_bucket              = aws_s3_object.artifact.bucket
   s3_key                 = aws_s3_object.artifact.key
-  source_code_hash       = data.archive_file.artifact.output_base64sha256
+  source_code_hash       = aws_s3_object.artifact.etag
   policy                 = data.aws_iam_policy_document.lambda.json
   subnet_ids             = [var.subnet_id]
   security_group_ids     = [aws_security_group.lambda.id]

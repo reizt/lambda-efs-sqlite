@@ -1,8 +1,19 @@
 import os
 import sqlite3
+from typing import Any
+
+from fastapi import FastAPI
+
+app = FastAPI()
 
 
-def handler(event, context):
+@app.get("/hello")
+def read_root() -> dict[str, str]:
+  return {"Hello": "World"}
+
+
+@app.post("/db")
+def db(event: dict[str, Any], ctx: dict[str, Any]) -> None:
   print(event)
   efs_dir = os.environ["EFS_MOUNT_PATH"]
   print("efs_dir", efs_dir)
@@ -34,7 +45,3 @@ def handler(event, context):
     print(rows)
   finally:
     conn.close()
-
-
-if __name__ == "__main__":
-  handler({}, {})
