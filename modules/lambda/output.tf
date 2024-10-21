@@ -9,3 +9,7 @@ output "arn" {
 output "invoke_arn" {
   value = aws_lambda_function.this.invoke_arn
 }
+
+output "role_arn" {
+  value = module.lambda_role.role_arn
+}

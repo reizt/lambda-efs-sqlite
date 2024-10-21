@@ -37,6 +37,28 @@ resource "aws_efs_file_system" "this" {
   }
 }
 
+resource "aws_efs_file_system_policy" "this" {
+  file_system_id = aws_efs_file_system.this.id
+  policy         = data.aws_iam_policy_document.efs.json
+}
+
+data "aws_iam_policy_document" "efs" {
+  statement {
+    principals {
+      type        = "AWS"
+      identifiers = [module.lambda.role_arn]
+    }
+    actions = [
+      "elasticfilesystem:ClientMount",
+      "elasticfilesystem:ClientWrite",
+      "elasticfilesystem:ClientRootAccess",
+    ]
+    resources = [
+      aws_efs_file_system.this.arn,
+    ]
+  }
+}
+
 resource "aws_efs_access_point" "this" {
   file_system_id = aws_efs_file_system.this.id
   posix_user {
