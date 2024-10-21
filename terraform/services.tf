@@ -15,10 +15,10 @@ module "lambda" {
 }
 
 module "apigw" {
-  source            = "./services/apigw"
-  app               = local.app
-  lambda_name       = module.lambda.name
-  lambda_invoke_arn = module.lambda.invoke_arn
+  source             = "./services/apigw"
+  app                = local.app
+  lambda_names       = module.lambda.names
+  lambda_invoke_arns = module.lambda.invoke_arns
 }
 
 module "gha" {

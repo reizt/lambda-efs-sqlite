@@ -3,11 +3,15 @@ data "aws_s3_bucket" "this" {
 }
 
 data "aws_s3_object" "source" {
+  for_each = toset(local.apps)
+
   bucket = data.aws_s3_bucket.this.bucket
-  key    = "lambda.zip"
+  key    = "${each.value}/source.zip"
 }
 
 data "aws_s3_object" "layer" {
+  for_each = toset(local.apps)
+
   bucket = data.aws_s3_bucket.this.bucket
-  key    = "layer.zip"
+  key    = "${each.value}/layer.zip"
 }

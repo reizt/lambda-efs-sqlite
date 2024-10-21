@@ -1,4 +1,4 @@
-name: Upload layer
+name: Python layer
 on:
   push:
     branches:

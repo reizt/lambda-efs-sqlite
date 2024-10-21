@@ -2,14 +2,15 @@ variable "app" {
   type = string
 }
 locals {
-  app = var.app
+  app  = var.app
+  apps = ["python"]
 }
 
-variable "lambda_name" {
-  type = string
+variable "lambda_names" {
+  type = map(string)
 }
-variable "lambda_invoke_arn" {
-  type = string
+variable "lambda_invoke_arns" {
+  type = map(string)
 }
 
 module "apigw" {
@@ -17,16 +18,26 @@ module "apigw" {
   name   = local.app
 }
 
+resource "aws_api_gateway_resource" "subpath" {
+  for_each = toset(local.apps)
+
+  rest_api_id = module.apigw.rest_api_id
+  parent_id   = module.apigw.root_resource_id
+  path_part   = each.value
+}
+
 module "apigw_lambda_proxy" {
+  for_each = toset(local.apps)
+
   source                 = "../../modules/apigw-lambda-proxy"
   rest_api_id            = module.apigw.rest_api_id
   rest_api_execution_arn = module.apigw.execution_arn
-  parent_resource_id     = module.apigw.root_resource_id
+  parent_resource_id     = aws_api_gateway_resource.subpath[each.value].id
   method                 = "ANY"
   path                   = "{proxy+}"
   header_mappings        = []
-  lambda_name            = var.lambda_name
-  lambda_invoke_arn      = var.lambda_invoke_arn
+  lambda_name            = var.lambda_names[each.value]
+  lambda_invoke_arn      = var.lambda_invoke_arns[each.value]
 }
 
 module "apigw_deployment" {

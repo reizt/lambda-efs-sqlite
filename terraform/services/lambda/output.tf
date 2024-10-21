@@ -1,6 +1,6 @@
-output "name" {
-  value = module.lambda.name
+output "names" {
+  value = { for key, lambda in module.lambda : key => lambda.name }
 }
-output "invoke_arn" {
-  value = module.lambda.invoke_arn
+output "invoke_arns" {
+  value = { for key, lambda in module.lambda : key => lambda.invoke_arn }
 }
