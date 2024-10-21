@@ -8,7 +8,7 @@ resource "aws_lambda_function" "this" {
   timeout           = 900
   memory_size       = 3000
   package_type      = "Zip"
-  architectures     = ["arm64"]
+  architectures     = ["x86_64"]
   runtime           = var.runtime
   handler           = var.handler
   s3_bucket         = var.s3_bucket
