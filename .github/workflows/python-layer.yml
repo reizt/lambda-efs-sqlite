@@ -5,6 +5,7 @@ on:
       - main
     paths:
       - python/requirements.lock
+      - .github/workflows/python-layer.yml
   workflow_dispatch:
 permissions:
   id-token: write
