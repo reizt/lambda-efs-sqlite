@@ -32,7 +32,7 @@ module "apigw_lambda_proxy" {
 module "apigw_deployment" {
   source         = "../../modules/apigw-deployment"
   rest_api_id    = module.apigw.rest_api_id
-  log_group_name = "${local.app}/apigw"
+  log_group_name = "/${local.app}/apigw"
   depends_on = [
     module.apigw_lambda_proxy,
   ]
