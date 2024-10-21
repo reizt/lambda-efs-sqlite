@@ -62,14 +62,14 @@ data "aws_iam_policy_document" "efs" {
 resource "aws_efs_access_point" "this" {
   file_system_id = aws_efs_file_system.this.id
   posix_user {
-    gid = 1000
-    uid = 1000
+    gid = 0
+    uid = 0
   }
   root_directory {
     path = "/"
     creation_info {
-      owner_gid   = 1000
-      owner_uid   = 1000
+      owner_gid   = 0
+      owner_uid   = 0
       permissions = "0700"
     }
   }
