@@ -44,13 +44,8 @@ data "aws_iam_policy_document" "assume_role" {
   }
 }
 
-data "aws_s3_object" "this" {
-  for_each = toset([
-    "lambda.zip",
-    "layer.zip",
-  ])
+data "aws_s3_bucket" "this" {
   bucket = "reizt-lambda-efs-sqlite"
-  key    = each.value
 }
 
 data "aws_iam_policy_document" "this" {
@@ -62,7 +57,7 @@ data "aws_iam_policy_document" "this" {
       "s3:DeleteObject",
     ]
     resources = [
-      for s3_object in data.aws_s3_object.this : s3_object.arn
+      "${data.aws_s3_bucket.this.arn}/*",
     ]
   }
 }
