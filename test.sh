@@ -1,5 +1,5 @@
 # base=http://localhost:8000
-base=https://les.reij.uno
+base=https://les.reij.uno/python
 out=tmp/out.json
 
 get() {

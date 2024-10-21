@@ -1,10 +1,12 @@
+import os
+
 from fastapi import FastAPI
 from pydantic import BaseModel
 
 from ent import Post, User
 from repo import Repo
 
-app = FastAPI()
+app = FastAPI(root_path=os.environ["API_ROOT_PATH"])
 
 
 @app.get("/hello")

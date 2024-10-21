@@ -47,7 +47,8 @@ module "lambda" {
   handler = local.handlers[each.value]
   layers  = [aws_lambda_layer_version.this[each.value].arn]
   environment = {
-    DATABASE_URL = "${local.efs_mount_path}/sqlite3.db"
+    API_ROOT_PATH = "/${each.value}"
+    DATABASE_URL  = "${local.efs_mount_path}/sqlite3.db"
   }
   s3_bucket              = data.aws_s3_object.source[each.value].bucket
   s3_key                 = data.aws_s3_object.source[each.value].key
