@@ -31,6 +31,7 @@ resource "aws_s3_object" "artifact" {
 
 resource "aws_efs_file_system" "this" {
   creation_token = local.app
+  encrypted      = true
 }
 
 resource "aws_efs_access_point" "this" {
