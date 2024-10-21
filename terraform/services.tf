@@ -22,6 +22,7 @@ module "apigw" {
 }
 
 module "gha" {
-  source = "./services/gha"
-  app    = local.app
+  source      = "./services/gha"
+  app         = local.app
+  lambda_arns = [for key, arn in module.lambda.arns : arn]
 }

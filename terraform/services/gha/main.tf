@@ -5,6 +5,10 @@ locals {
   app = var.app
 }
 
+variable "lambda_arns" {
+  type = list(string)
+}
+
 module "role" {
   source             = "../../modules/iam-role"
   role_name          = "${local.app}-gha"
@@ -59,5 +63,12 @@ data "aws_iam_policy_document" "this" {
     resources = [
       "${data.aws_s3_bucket.this.arn}/*",
     ]
+  }
+  statement {
+    effect = "Allow"
+    actions = [
+      "lambda:UpdateFunctionCode",
+    ]
+    resources = var.lambda_arns
   }
 }
