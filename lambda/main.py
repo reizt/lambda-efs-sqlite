@@ -5,7 +5,11 @@ import sqlite3
 def handler(event, context):
   print(event)
   efs_dir = os.environ["EFS_MOUNT_PATH"]
-  print(efs_dir, os.listdir(efs_dir))
+  print("efs_dir", efs_dir)
+  print("exists: ", os.path.isdir(efs_dir))
+  print("read permission: ", os.access(efs_dir, os.R_OK))
+  print("write permission: ", os.access(efs_dir, os.W_OK))
+  print("listdir: ", os.listdir(efs_dir))
   conn = sqlite3.connect(f"{efs_dir}/sqlite3.db")
   try:
     print("connected")
