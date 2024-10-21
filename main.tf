@@ -23,3 +23,5 @@ provider "aws" {
     }
   }
 }
+
+provider "archive" {}
