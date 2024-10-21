@@ -13,7 +13,7 @@ variable "subnet_id" {
 }
 
 resource "aws_s3_bucket" "this" {
-  bucket = "crtm-lambda-efs-sqlite"
+  bucket = "reizt-lambda-efs-sqlite"
 }
 
 data "archive_file" "artifact" {
