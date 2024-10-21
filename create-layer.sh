@@ -1,23 +1,14 @@
 #! /bin/sh
 
-workdir=tmp
-outfile=layer.zip
-venv=venv
-layer=layer
-requirements=requirements.lock
+rm -rf tmp
+mkdir tmp
+cp .python-version requirements.lock requirements-dev.lock pyproject.toml README.md tmp
+cd tmp
 
-mkdir -p $workdir
-cp requirements.lock requirements-dev.lock .python-version pyproject.toml README.md $workdir
-cd $workdir
-rm -rf $venv $layer $outfile
-echo "✅ created workdir: $workdir"
-python -m venv $venv
-echo "✅ created venv: $venv"
-$venv/bin/pip install -r requirements.lock
-echo "✅ installed requirements"
-mkdir -p $layer
-mv $venv/lib $layer/python
-echo "✅ moved python libs: $layer/python"
-zip -r $outfile $layer
-echo "✅ created zip file: $outfile"
+python3.12 -m venv layer
+layer/bin/pip install -r requirements.lock
+mv layer/lib/python3.12/site-packages python
+zip -r ../layer.zip python
+
 cd ..
+rm -rf tmp

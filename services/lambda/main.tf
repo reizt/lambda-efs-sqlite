@@ -47,6 +47,7 @@ resource "aws_lambda_layer_version" "this" {
   compatible_architectures = ["arm64"]
   s3_bucket                = aws_s3_bucket.this.bucket
   s3_key                   = data.aws_s3_object.layer.key
+  s3_object_version        = data.aws_s3_object.layer.version_id
   source_code_hash         = data.aws_s3_object.layer.checksum_sha256
 }
 
