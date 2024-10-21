@@ -19,6 +19,9 @@ variable "s3_bucket" {
 variable "s3_key" {
   type = string
 }
+variable "s3_object_version" {
+  type = string
+}
 variable "source_code_hash" {
   type = string
 }

@@ -3,18 +3,19 @@ resource "aws_cloudwatch_log_group" "this" {
 }
 
 resource "aws_lambda_function" "this" {
-  function_name    = var.name
-  role             = module.lambda_role.role_arn
-  timeout          = 900
-  memory_size      = 3000
-  package_type     = "Zip"
-  architectures    = ["arm64"]
-  runtime          = var.runtime
-  handler          = var.handler
-  s3_bucket        = var.s3_bucket
-  s3_key           = var.s3_key
-  source_code_hash = var.source_code_hash
-  layers           = var.layers
+  function_name     = var.name
+  role              = module.lambda_role.role_arn
+  timeout           = 900
+  memory_size       = 3000
+  package_type      = "Zip"
+  architectures     = ["arm64"]
+  runtime           = var.runtime
+  handler           = var.handler
+  s3_bucket         = var.s3_bucket
+  s3_key            = var.s3_key
+  s3_object_version = var.s3_object_version
+  source_code_hash  = var.source_code_hash
+  layers            = var.layers
   environment {
     variables = var.environment
   }
