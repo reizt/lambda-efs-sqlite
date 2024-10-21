@@ -32,6 +32,9 @@ resource "aws_s3_object" "artifact" {
 resource "aws_efs_file_system" "this" {
   creation_token = local.app
   encrypted      = true
+  tags = {
+    Name = local.app
+  }
 }
 
 resource "aws_efs_access_point" "this" {
@@ -39,6 +42,9 @@ resource "aws_efs_access_point" "this" {
   posix_user {
     gid = 1000
     uid = 1000
+  }
+  tags = {
+    Name = local.app
   }
 }
 
@@ -56,6 +62,9 @@ resource "aws_security_group" "efs" {
     to_port     = 0
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
+  }
+  tags = {
+    Name = "${local.app}-efs"
   }
 }
 
