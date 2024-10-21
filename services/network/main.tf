@@ -8,8 +8,8 @@ locals {
 output "vpc_id" {
   value = aws_vpc.this.id
 }
-output "subnet_ids" {
-  value = [aws_subnet.public.id]
+output "public_subnet_id" {
+  value = aws_subnet.public.id
 }
 
 resource "aws_vpc" "this" {
