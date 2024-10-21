@@ -56,6 +56,16 @@ data "aws_iam_policy_document" "this" {
   statement {
     effect = "Allow"
     actions = [
+      "s3:ListBucket",
+      "s3:ListBucketVersions",
+    ]
+    resources = [
+      data.aws_s3_bucket.this.arn,
+    ]
+  }
+  statement {
+    effect = "Allow"
+    actions = [
       "s3:GetObject",
       "s3:PutObject",
       "s3:DeleteObject",
