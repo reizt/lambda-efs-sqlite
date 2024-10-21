@@ -36,6 +36,10 @@ resource "aws_efs_file_system" "this" {
 
 resource "aws_efs_access_point" "this" {
   file_system_id = aws_efs_file_system.this.id
+  posix_user {
+    gid = 1000
+    uid = 1000
+  }
 }
 
 resource "aws_security_group" "efs" {
