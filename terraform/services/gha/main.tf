@@ -67,6 +67,7 @@ data "aws_iam_policy_document" "this" {
     effect = "Allow"
     actions = [
       "s3:GetObject",
+      "s3:GetObjectVersion",
       "s3:PutObject",
       "s3:DeleteObject",
     ]
