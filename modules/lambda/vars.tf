@@ -37,3 +37,6 @@ variable "file_system_arn" {
 variable "file_system_mount_path" {
   type = string
 }
+variable "log_group_name" {
+  type = string
+}

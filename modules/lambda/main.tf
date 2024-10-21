@@ -1,3 +1,7 @@
+resource "aws_cloudwatch_log_group" "this" {
+  name = var.log_group_name
+}
+
 resource "aws_lambda_function" "this" {
   function_name    = var.name
   role             = module.lambda_role.role_arn
@@ -22,10 +26,10 @@ resource "aws_lambda_function" "this" {
     arn              = var.file_system_arn
     local_mount_path = var.file_system_mount_path
   }
-}
-
-resource "aws_cloudwatch_log_group" "this" {
-  name = "/aws/lambda/${var.name}"
+  logging_config {
+    log_format = "Text"
+    log_group  = aws_cloudwatch_log_group.this.name
+  }
 }
 
 module "lambda_role" {

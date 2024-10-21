@@ -163,7 +163,9 @@ module "lambda" {
   security_group_ids     = [aws_security_group.lambda.id]
   file_system_arn        = aws_efs_access_point.this.arn
   file_system_mount_path = local.efs_mount_path
-  depends_on             = [aws_efs_mount_target.this]
+  log_group_name         = "/${local.app}/lambda"
+
+  depends_on = [aws_efs_mount_target.this]
 }
 
 data "aws_iam_policy_document" "lambda" {
