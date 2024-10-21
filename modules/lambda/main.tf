@@ -67,4 +67,13 @@ data "aws_iam_policy_document" "this" {
       "${aws_cloudwatch_log_group.this.arn}:*",
     ]
   }
+  statement {
+    sid = "AllowENI"
+    actions = [
+      "ec2:DescribeNetworkInterfaces",
+      "ec2:CreateNetworkInterface",
+      "ec2:DeleteNetworkInterface",
+    ]
+    resources = ["*"]
+  }
 }
