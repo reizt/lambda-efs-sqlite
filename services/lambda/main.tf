@@ -157,7 +157,7 @@ module "lambda" {
   }
   s3_bucket              = aws_s3_object.artifact.bucket
   s3_key                 = aws_s3_object.artifact.key
-  source_code_hash       = aws_s3_object.artifact.etag
+  source_code_hash       = aws_s3_object.artifact.checksum_sha256
   policy                 = data.aws_iam_policy_document.lambda.json
   subnet_ids             = [var.subnet_id]
   security_group_ids     = [aws_security_group.lambda.id]
