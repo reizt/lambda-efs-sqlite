@@ -4,8 +4,9 @@ import sqlite3
 
 def handler(event, context):
   print(event)
-  db_path = os.environ["DATABASE_PATH"]
-  conn = sqlite3.connect(db_path)
+  efs_dir = os.environ["EFS_MOUNT_PATH"]
+  print(os.listdir(efs_dir))
+  conn = sqlite3.connect(f"{efs_dir}/sqlite3.db")
   try:
     print("connected")
 

@@ -77,6 +77,10 @@ resource "aws_security_group" "lambda" {
   }
 }
 
+locals {
+  efs_mount_path = "/mnt/efs"
+}
+
 module "lambda" {
   source  = "../../modules/lambda"
   name    = local.app
@@ -84,7 +88,7 @@ module "lambda" {
   handler = "main.handler"
   layers  = []
   environment = {
-    DATABASE_PATH = "/mnt/efs/sqlite3.db"
+    EFS_MOUNT_PATH = local.efs_mount_path
   }
   s3_bucket              = aws_s3_object.artifact.bucket
   s3_key                 = aws_s3_object.artifact.key
@@ -93,7 +97,7 @@ module "lambda" {
   subnet_ids             = [var.subnet_id]
   security_group_ids     = [aws_security_group.lambda.id]
   file_system_arn        = aws_efs_access_point.this.arn
-  file_system_mount_path = "/mnt/efs"
+  file_system_mount_path = local.efs_mount_path
   depends_on             = [aws_efs_mount_target.this]
 }
 
