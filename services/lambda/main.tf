@@ -70,7 +70,7 @@ resource "aws_efs_access_point" "this" {
     creation_info {
       owner_gid   = 1000
       owner_uid   = 1000
-      permissions = "0777"
+      permissions = "0700"
     }
   }
   tags = {
@@ -153,7 +153,7 @@ data "aws_iam_policy_document" "lambda" {
       "elasticfilesystem:ClientRootAccess",
     ]
     resources = [
-      aws_efs_file_system.this.arn,
+      aws_efs_access_point.this.arn,
     ]
   }
 }
