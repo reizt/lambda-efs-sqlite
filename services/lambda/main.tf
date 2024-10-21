@@ -104,7 +104,13 @@ module "lambda" {
 
 data "aws_iam_policy_document" "lambda" {
   statement {
-    actions   = ["none:null"]
-    resources = ["*"]
+    actions = [
+      "elasticfilesystem:ClientMount",
+      "elasticfilesystem:ClientWrite",
+      "elasticfilesystem:ClientRootAccess",
+    ]
+    resources = [
+      aws_efs_file_system.this.arn,
+    ]
   }
 }
