@@ -1,8 +1,8 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 
-from src.ent import Post, User
-from src.repo import Repo
+from ent import Post, User
+from repo import Repo
 
 app = FastAPI()
 

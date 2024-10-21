@@ -2,7 +2,7 @@ import os
 
 from peewee import CharField, ForeignKeyField, IntegerField, Model, SqliteDatabase
 
-from src.ent import Post, User
+from ent import Post, User
 
 database_url = os.environ["DATABASE_URL"]
 db = SqliteDatabase(database_url)
