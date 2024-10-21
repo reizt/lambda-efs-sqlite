@@ -26,6 +26,7 @@ resource "aws_s3_object" "artifact" {
   bucket = aws_s3_bucket.this.bucket
   key    = "lambda.zip"
   source = data.archive_file.artifact.output_path
+  etag   = data.archive_file.artifact.output_base64sha256
 }
 
 resource "aws_efs_file_system" "this" {
@@ -85,6 +86,7 @@ module "lambda" {
   environment            = {}
   s3_bucket              = aws_s3_object.artifact.bucket
   s3_key                 = aws_s3_object.artifact.key
+  source_code_hash       = data.archive_file.artifact.output_base64sha256
   policy                 = data.aws_iam_policy_document.lambda.json
   subnet_ids             = [var.subnet_id]
   security_group_ids     = [aws_security_group.lambda.id]

@@ -4,15 +4,16 @@ data "aws_lambda_layer_version" "this" {
 }
 
 resource "aws_lambda_function" "this" {
-  function_name = var.name
-  role          = module.lambda_role.role_arn
-  timeout       = 900
-  memory_size   = 10240
-  package_type  = "Zip"
-  runtime       = var.runtime
-  handler       = var.handler
-  s3_bucket     = var.s3_bucket
-  s3_key        = var.s3_key
+  function_name    = var.name
+  role             = module.lambda_role.role_arn
+  timeout          = 900
+  memory_size      = 10240
+  package_type     = "Zip"
+  runtime          = var.runtime
+  handler          = var.handler
+  s3_bucket        = var.s3_bucket
+  s3_key           = var.s3_key
+  source_code_hash = var.source_code_hash
   layers = [
     for layer in data.aws_lambda_layer_version.this : layer.arn
   ]
