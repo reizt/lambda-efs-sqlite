@@ -14,25 +14,19 @@ variable "lambda_invoke_arns" {
 }
 
 module "apigw" {
-  source = "../../modules/apigw"
-  name   = local.app
-}
-
-resource "aws_api_gateway_resource" "subpath" {
   for_each = toset(local.apps)
 
-  rest_api_id = module.apigw.rest_api_id
-  parent_id   = module.apigw.root_resource_id
-  path_part   = each.value
+  source = "../../modules/apigw"
+  name   = "${local.app}-${each.value}"
 }
 
 module "apigw_lambda_proxy" {
   for_each = toset(local.apps)
 
   source                 = "../../modules/apigw-lambda-proxy"
-  rest_api_id            = module.apigw.rest_api_id
-  rest_api_execution_arn = module.apigw.execution_arn
-  parent_resource_id     = aws_api_gateway_resource.subpath[each.value].id
+  rest_api_id            = module.apigw[each.value].rest_api_id
+  rest_api_execution_arn = module.apigw[each.value].execution_arn
+  parent_resource_id     = module.apigw[each.value].root_resource_id
   method                 = "ANY"
   path                   = "{proxy+}"
   header_mappings        = []
@@ -41,9 +35,11 @@ module "apigw_lambda_proxy" {
 }
 
 module "apigw_deployment" {
+  for_each = toset(local.apps)
+
   source         = "../../modules/apigw-deployment"
-  rest_api_id    = module.apigw.rest_api_id
-  log_group_name = "/${local.app}/apigw"
+  rest_api_id    = module.apigw[each.value].rest_api_id
+  log_group_name = "/${local.app}/${each.value}/apigw"
   depends_on = [
     module.apigw_lambda_proxy,
   ]
@@ -64,11 +60,10 @@ module "apigw_domain" {
   for_each = toset(local.apps)
 
   source          = "../../modules/apigw-domain"
-  rest_api_id     = module.apigw.rest_api_id
-  stage_name      = module.apigw_deployment.stage_name
+  rest_api_id     = module.apigw[each.value].rest_api_id
+  stage_name      = module.apigw_deployment[each.value].stage_name
   domain_name     = local.api_domain_names[each.value]
   certificate_arn = data.aws_acm_certificate.this.arn
-  base_path       = each.value
 }
 
 data "aws_route53_zone" "this" {
