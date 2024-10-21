@@ -51,7 +51,9 @@ module "apigw_deployment" {
 
 locals {
   root_domain_name = "reij.uno"
-  api_domain_name  = "les.reij.uno"
+  api_domain_names = {
+    python = "les-py.reij.uno"
+  }
 }
 
 data "aws_acm_certificate" "this" {
@@ -59,11 +61,14 @@ data "aws_acm_certificate" "this" {
 }
 
 module "apigw_domain" {
+  for_each = toset(local.apps)
+
   source          = "../../modules/apigw-domain"
   rest_api_id     = module.apigw.rest_api_id
   stage_name      = module.apigw_deployment.stage_name
-  domain_name     = local.api_domain_name
+  domain_name     = local.api_domain_names[each.value]
   certificate_arn = data.aws_acm_certificate.this.arn
+  base_path       = each.value
 }
 
 data "aws_route53_zone" "this" {
@@ -71,12 +76,14 @@ data "aws_route53_zone" "this" {
 }
 
 resource "aws_route53_record" "apigw" {
+  for_each = toset(local.apps)
+
   zone_id = data.aws_route53_zone.this.zone_id
-  name    = local.api_domain_name
+  name    = local.api_domain_names[each.value]
   type    = "A"
   alias {
-    zone_id                = module.apigw_domain.regional_zone_id
-    name                   = module.apigw_domain.regional_domain_name
+    zone_id                = module.apigw_domain[each.value].regional_zone_id
+    name                   = module.apigw_domain[each.value].regional_domain_name
     evaluate_target_health = true
   }
 }
