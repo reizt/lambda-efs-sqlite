@@ -7,7 +7,7 @@ resource "aws_lambda_function" "this" {
   function_name    = var.name
   role             = module.lambda_role.role_arn
   timeout          = 900
-  memory_size      = 10240
+  memory_size      = 3000
   package_type     = "Zip"
   runtime          = var.runtime
   handler          = var.handler
