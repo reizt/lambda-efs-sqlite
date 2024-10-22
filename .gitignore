@@ -1,8 +1,13 @@
+.sqlite/
+tmp/
+*.zip
+*.env
+.DS_Store
+
 .venv/
 .ruff_cache/
 .mypy_cache/
 __pycache__/
-tmp/
-.sqlite/
-*.zip
-*.env
+
+node_modules/
+dist/
