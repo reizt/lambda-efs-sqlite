@@ -21,7 +21,7 @@ build-backend = "hatchling.build"
 managed = true
 dev-dependencies = [
     "ruff>=0.7.0",
-    "mypy>=1.12.1",
+    "mypy>=1.13.0",
     "fastapi[standard]>=0.115.2",
 ]
 
