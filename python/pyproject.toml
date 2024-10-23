@@ -23,6 +23,7 @@ dev-dependencies = [
     "ruff>=0.7.0",
     "mypy>=1.13.0",
     "fastapi[standard]>=0.115.2",
+    "python-dotenv>=1.0.1",
 ]
 
 [tool.ruff]
