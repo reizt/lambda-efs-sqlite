@@ -10,7 +10,7 @@ data "aws_s3_object" "source" {
 }
 
 data "aws_s3_object" "layer" {
-  for_each = toset(local.apps)
+  for_each = toset(local.layer_using_apps)
 
   bucket = data.aws_s3_bucket.this.bucket
   key    = "${each.value}/layer.zip"

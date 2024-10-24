@@ -3,7 +3,7 @@ variable "app" {
 }
 locals {
   app  = var.app
-  apps = ["python"]
+  apps = ["python", "nodejs"]
 }
 
 variable "lambda_names" {
@@ -49,6 +49,7 @@ locals {
   root_domain_name = "reij.uno"
   api_domain_names = {
     python = "les-py.reij.uno"
+    nodejs = "les-js.reij.uno"
   }
 }
 

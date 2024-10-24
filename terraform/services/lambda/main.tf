@@ -1,16 +1,19 @@
 locals {
-  efs_mount_path = "/mnt/efs"
-  apps           = ["python"]
+  efs_mount_path   = "/mnt/efs"
+  apps             = ["python", "nodejs"]
+  layer_using_apps = ["python"]
   runtimes = {
     python = "python3.12"
+    nodejs = "nodejs20.x"
   }
   handlers = {
     python = "lambda.handler"
+    nodejs = "lambda.handler"
   }
 }
 
 resource "aws_lambda_layer_version" "this" {
-  for_each = toset(local.apps)
+  for_each = toset(local.layer_using_apps)
 
   layer_name               = "${local.app}-${each.value}"
   compatible_runtimes      = [local.runtimes[each.value]]
@@ -37,7 +40,6 @@ resource "aws_security_group" "lambda" {
   }
 }
 
-
 module "lambda" {
   for_each = toset(local.apps)
 
@@ -45,7 +47,10 @@ module "lambda" {
   name    = "${local.app}-${each.value}"
   runtime = local.runtimes[each.value]
   handler = local.handlers[each.value]
-  layers  = [aws_lambda_layer_version.this[each.value].arn]
+  layers = {
+    python = [aws_lambda_layer_version.this["python"].arn]
+    nodejs = []
+  }[each.value]
   environment = {
     API_ROOT_PATH = "/${each.value}"
     DATABASE_URL  = "${local.efs_mount_path}/sqlite3.db"
