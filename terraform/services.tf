@@ -1,5 +1,5 @@
 locals {
-  app = "lambda-efs-sqlite"
+  app = "les"
 }
 
 module "network" {

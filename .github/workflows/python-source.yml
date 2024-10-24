@@ -12,7 +12,7 @@ permissions:
   contents: read
 env:
   artifact: source.zip
-  function: lambda-efs-sqlite-python
+  function: les-python
   bucket: reizt-lambda-efs-sqlite
   key: python/source.zip
 jobs:
