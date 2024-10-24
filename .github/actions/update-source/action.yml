@@ -1,0 +1,45 @@
+name: Update source
+description: Update source
+inputs:
+  aws-role-arn:
+    description: AWS Role ARN
+    required: true
+  aws-region:
+    description: AWS Region
+    required: true
+  artifact:
+    description: Artifact name
+    required: true
+  lambda:
+    description: AWS Lambda function name
+    required: true
+  bucket:
+    description: Bucket name
+    required: true
+  key:
+    description: Key name
+    required: true
+runs:
+  using: composite
+  steps:
+    - uses: aws-actions/configure-aws-credentials@v4
+      with:
+        role-to-assume: ${{ inputs.aws-role-arn }}
+        aws-region: ${{ inputs.aws-region }}
+    - shell: bash
+      run: aws s3 cp ${{ inputs.artifact }} s3://${{ inputs.bucket }}/${{ inputs.key }}
+    - id: get-object-version
+      shell: bash
+      run: |
+        echo "version=$(aws s3api list-object-versions \
+          --bucket ${{ inputs.bucket }} \
+          --prefix ${{ inputs.key }} \
+          --query 'Versions[0].VersionId' \
+          --output text)" >> $GITHUB_OUTPUT
+    # - shell: bash
+    #   run: |
+    #     aws lambda update-function-code \
+    #       --function-name ${{ inputs.lambda }} \
+    #       --s3-bucket ${{ inputs.bucket }} \
+    #       --s3-key ${{ inputs.key }} \
+    #       --s3-object-version ${{ steps.get-object-version.outputs.version }}

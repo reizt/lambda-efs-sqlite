@@ -1,0 +1,42 @@
+name: Update nodejs source
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - nodejs/**
+      - .github/workflows/nodejs-source.yml
+      - .github/actions/update-source/action.yml
+  workflow_dispatch:
+permissions:
+  id-token: write
+  contents: read
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: nodejs
+    env:
+      artifact: source.zip
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 8
+          run_install: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run build
+      - run: zip -r ${{ env.artifact }} -j dist
+      - uses: ./.github/actions/update-source
+        with:
+          aws-role-arn: ${{ vars.AWS_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+          artifact: nodejs/${{ env.artifact }}
+          lambda: les-nodejs
+          bucket: reizt-lambda-efs-sqlite
+          key: nodejs/source.zip

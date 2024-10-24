@@ -6,39 +6,30 @@ on:
     paths:
       - python/**
       - .github/workflows/python-source.yml
+      - .github/actions/update-source/action.yml
   workflow_dispatch:
 permissions:
   id-token: write
   contents: read
-env:
-  artifact: source.zip
-  function: les-python
-  bucket: reizt-lambda-efs-sqlite
-  key: python/source.zip
 jobs:
   upload:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: python
+    env:
+      artifact: source.zip
     steps:
       - uses: actions/checkout@v4
       - run: |
-          cd python/src
-          zip -r ../../${{ env.artifact }} .
-          cd ../..
-      - uses: aws-actions/configure-aws-credentials@v4
+          cd src
+          zip -r ../${{ env.artifact }} .
+          cd ..
+      - uses: ./.github/actions/update-source
         with:
-          role-to-assume: ${{ vars.AWS_ROLE_ARN }}
+          aws-role-arn: ${{ vars.AWS_ROLE_ARN }}
           aws-region: ${{ vars.AWS_REGION }}
-      - run: aws s3 cp ${{ env.artifact }} s3://${{ env.bucket }}/${{ env.key }}
-      - id: get-object-version
-        run: |
-          echo "version=$(aws s3api list-object-versions \
-            --bucket ${{ env.bucket }} \
-            --prefix ${{ env.key }} \
-            --query 'Versions[0].VersionId' \
-            --output text)" >> $GITHUB_OUTPUT
-      - run: |
-          aws lambda update-function-code \
-            --function-name ${{ env.function }} \
-            --s3-bucket ${{ env.bucket }} \
-            --s3-key ${{ env.key }} \
-            --s3-object-version ${{ steps.get-object-version.outputs.version }}
+          artifact: python/${{ env.artifact }}
+          lambda: les-python
+          bucket: reizt-lambda-efs-sqlite
+          key: python/source.zip
