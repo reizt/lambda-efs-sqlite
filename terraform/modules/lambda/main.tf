@@ -30,6 +30,11 @@ resource "aws_lambda_function" "this" {
     log_format = "Text"
     log_group  = aws_cloudwatch_log_group.this.name
   }
+  lifecycle {
+    ignore_changes = [
+      s3_object_version,
+    ]
+  }
 }
 
 module "lambda_role" {
