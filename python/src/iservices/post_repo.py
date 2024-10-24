@@ -30,7 +30,7 @@ class IPostRepo(ABC):
     pass
 
   @abstractmethod
-  async def pick(self, where: Where) -> RepoPost:
+  async def pick(self, where: Where) -> RepoPost | None:
     pass
 
   @dataclass
@@ -40,7 +40,7 @@ class IPostRepo(ABC):
     content: str
 
   @abstractmethod
-  async def create(self, data: CreateData) -> None:
+  async def create(self, data: CreateData) -> RepoPost:
     pass
 
   @dataclass

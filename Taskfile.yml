@@ -1,0 +1,14 @@
+# yaml-language-server: $schema=https://json.schemastore.org/taskfile
+version: "3"
+
+vars:
+  APP: les
+  PYTHON: python
+  LAYER: python/layer.zip
+  SOURCE: python/source.zip
+
+tasks:
+  py:
+    desc: Run python dev server
+    cmds:
+      - cd python && .venv/bin/fastapi dev src/server.py

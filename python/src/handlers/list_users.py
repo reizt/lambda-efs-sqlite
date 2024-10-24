@@ -5,35 +5,35 @@ from fastapi.responses import JSONResponse
 
 from handlers._shared import UserJson
 from iservices import IServices
-from iusecases.create_user import Input
-from usecases.create_user import create_usecase
+from iusecases.list_users import Input
+from usecases.list_users import create_usecase
 
 
 def create_router(services: IServices) -> APIRouter:
   usecase = create_usecase(services)
   router = APIRouter()
 
-  class RequestJson(TypedDict):
-    name: str
-
   class ResponseJson(TypedDict):
-    user: UserJson
+    users: list[UserJson]
 
-  @router.post("/users")
-  async def handle(reqJson: RequestJson) -> Response:
-    input = Input(name=reqJson["name"])
+  @router.get("/users")
+  async def handle() -> Response:
+    input = Input()
     try:
       output = await usecase.run(input)
     except Exception as err:
       print(err)
       raise HTTPException(400, "Bad Request")
 
-    resJson: ResponseJson = {
-      "user": {
-        "id": output.user.id,
-        "name": output.user.name,
-      },
+    body: ResponseJson = {
+      "users": [
+        {
+          "id": user.id,
+          "name": user.name,
+        }
+        for user in output.users
+      ],
     }
-    return JSONResponse(resJson)
+    return JSONResponse(body)
 
   return router

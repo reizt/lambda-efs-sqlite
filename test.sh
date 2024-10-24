@@ -1,5 +1,5 @@
-# base=http://localhost:8000
-base=https://les-py.reij.uno
+base=http://localhost:8000
+# base=https://les-py.reij.uno
 out=tmp/out.json
 
 get() {
@@ -18,10 +18,10 @@ post() {
 
 mkdir -p tmp
 post /users '{"name": "John Doe"}'
-user_id=$(jq .id $out)
+user_id=$(jq .user.id $out)
 get /users
 get /users/$user_id
 post /posts '{"title": "Title", "content": "Hello World", "user_id": '$user_id'}'
-post_id=$(jq .id $out)
+post_id=$(jq .post.id $out)
 get /posts
 get /posts/$post_id

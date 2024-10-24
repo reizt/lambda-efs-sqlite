@@ -7,8 +7,11 @@ from entities.user import User
 from iservices.post_repo import RepoPost
 from iservices.user_repo import RepoUser
 
-database_url = os.environ["DATABASE_URL"]
-db = SqliteDatabase(database_url)
+db_url = os.environ["DATABASE_URL"]
+db_dir = os.path.dirname(db_url)
+if not os.path.exists(db_dir):
+  os.makedirs(db_dir)
+db = SqliteDatabase(db_url)
 
 
 class PeeweeUser(Model):

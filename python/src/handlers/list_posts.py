@@ -5,8 +5,8 @@ from fastapi.responses import JSONResponse
 
 from handlers._shared import PostJson
 from iservices import IServices
-from iusecases.get_posts import Input
-from usecases.get_posts import create_usecase
+from iusecases.list_posts import Input
+from usecases.list_posts import create_usecase
 
 
 def create_router(services: IServices) -> APIRouter:

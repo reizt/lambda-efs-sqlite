@@ -4,10 +4,8 @@ from entities.post import Post
 
 
 class Input(BaseModel):
-  user_id: int
-  title: str
-  content: str
+  post_id: int
 
 
 class Output(BaseModel):
-  post: Post
+  post: Post | None

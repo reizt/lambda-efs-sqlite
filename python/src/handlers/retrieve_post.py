@@ -1,4 +1,3 @@
-import traceback
 from typing import TypedDict
 
 from fastapi import APIRouter, HTTPException, Response
@@ -6,37 +5,30 @@ from fastapi.responses import JSONResponse
 
 from handlers._shared import PostJson
 from iservices import IServices
-from iusecases.create_post import Input
-from usecases.create_post import create_usecase
+from iusecases.retrieve_post import Input
+from usecases.retrieve_post import create_usecase
 
 
 def create_router(services: IServices) -> APIRouter:
   usecase = create_usecase(services)
   router = APIRouter()
 
-  class RequestJson(TypedDict):
-    user_id: int
-    title: str
-    content: str
-
   class ResponseJson(TypedDict):
     post: PostJson
 
-  @router.post("/posts")
-  async def handle(body: RequestJson) -> Response:
-    input = Input(
-      user_id=body["user_id"],
-      title=body["title"],
-      content=body["content"],
-    )
+  @router.get("/posts/{post_id}")
+  async def handle(post_id: int) -> Response:
+    input = Input(post_id=post_id)
     try:
       output = await usecase.run(input)
     except Exception as err:
-      traceback.print_exc()
       print(err)
       raise HTTPException(400, "Bad Request")
 
-    resJson: ResponseJson = {
+    if output.post is None:
+      raise HTTPException(404, "Not Found")
+
+    body: ResponseJson = {
       "post": {
         "id": output.post.id,
         "user_id": output.post.user_id,
@@ -44,6 +36,6 @@ def create_router(services: IServices) -> APIRouter:
         "content": output.post.content,
       },
     }
-    return JSONResponse(resJson)
+    return JSONResponse(body)
 
   return router

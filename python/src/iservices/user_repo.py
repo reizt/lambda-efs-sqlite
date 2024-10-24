@@ -26,7 +26,7 @@ class IUserRepo(ABC):
     pass
 
   @abstractmethod
-  async def pick(self, where: Where) -> RepoUser:
+  async def pick(self, where: Where) -> RepoUser | None:
     pass
 
   @dataclass
@@ -34,7 +34,7 @@ class IUserRepo(ABC):
     name: str
 
   @abstractmethod
-  async def create(self, data: CreateData) -> None:
+  async def create(self, data: CreateData) -> RepoUser:
     pass
 
   @dataclass

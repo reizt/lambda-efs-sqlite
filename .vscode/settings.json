@@ -1,3 +1,8 @@
 {
-  "python.analysis.extraPaths": ["./python/.venv/lib/python3.12/site-packages","./.venv/src"]
+	"python.analysis.extraPaths": [
+		"./python/.venv/lib/python3.12/site-packages",
+		"./.venv/src"
+	],
+	"mypy.dmypyExecutable": "${workspaceFolder}/python/.venv/bin/dmypy",
+	"mypy.configFile": "python/pyproject.toml"
 }
